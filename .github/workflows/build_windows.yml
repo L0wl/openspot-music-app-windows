@@ -12,8 +12,9 @@ jobs:
               with:
                 node-version: '20'
             - name: Pack dependencies, build and pack
-              working-directory: openspot-music-app\openspot-music-electron
+              working-directory: openspot-music-electron
               run: |
+                ls
                 npm install
                 npm run build
                 npm run electron-pack
@@ -21,4 +22,4 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: electron-app-build
-                path: openspot-music-app\openspot-music-electron
+                path: openspot-music-electron
