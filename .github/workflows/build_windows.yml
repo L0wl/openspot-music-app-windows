@@ -49,5 +49,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openspot-windows-build
-          path: openspot-desktop/dist/**
+          path: openspot-desktop/dist/*.exe
           if-no-files-found: warn
