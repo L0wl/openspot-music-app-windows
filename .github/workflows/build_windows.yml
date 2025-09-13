@@ -1,6 +1,5 @@
 name: Build Windows
-on:
-  workflow_dispatch:
+on: { workflow_dispatch: {} }
 
 jobs:
   build:
@@ -12,23 +11,21 @@ jobs:
         working-directory: openspot-desktop
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: openspot-desktop/package-lock.json
 
       - name: Install deps
-        run: npm ci
+        run: npm ci || npm install
 
-      - name: Build and pack
-        run: |
-          npm run build
-          npm run electron-pack
+      - name: Build
+        run: npm run build
+
+      - name: Pack
+        run: npm run electron-pack
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
