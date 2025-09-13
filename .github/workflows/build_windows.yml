@@ -1,25 +1,41 @@
-name: Build windows
+name: Build Windows
 on:
-    workflow_dispatch:
+  workflow_dispatch:
+
 jobs:
-    build:
-        runs-on: windows-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-            - name: Setup node js
-              uses: actions/setup-node@v5
-              with:
-                node-version: '20'
-            - name: Pack dependencies, build and pack
-              working-directory: ./openspot-music-electron
-              run: |
-                ls
-                npm install
-                npm run build
-                npm run electron-pack
-            - name: Collecting artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                name: electron-app-build
-                path: ./openspot-music-electron
+  build:
+    runs-on: windows-2022
+
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: openspot-desktop
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: openspot-desktop/package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build and pack
+        run: |
+          npm run build
+          npm run electron-pack
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: openspot-windows-build
+          path: |
+            openspot-desktop/dist/**
+            openspot-desktop/release/**
+            openspot-desktop/build/**
+          if-no-files-found: warn
