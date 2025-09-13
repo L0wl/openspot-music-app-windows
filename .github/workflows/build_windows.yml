@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Write env file
+        run: |
+          Set-Content -Path .env -Value "DAB=${{ secrets.DAB }}" -Encoding UTF8
+
       - name: Install deps
         run: npm ci || npm install
 
@@ -31,8 +35,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openspot-windows-build
-          path: |
-            openspot-desktop/dist/**
-            openspot-desktop/release/**
-            openspot-desktop/build/**
+          path: openspot-desktop/dist/**
           if-no-files-found: warn
