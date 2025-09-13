@@ -17,18 +17,32 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 20
+      
+      - name: Verify API base URL secret
+        env:
+          ELECTRON_APP_API_BASE_URL: ${{ secrets.ELECTRON_APP_API_BASE_URL }}
+        run: |
+          if (-not $env:ELECTRON_APP_API_BASE_URL) {
+            Write-Error "Secret ELECTRON_APP_API_BASE_URL not defined"
+            exit 1
+          }
+          Write-Host "Secret ELECTRON_APP_API_BASE_URL submitted"
 
       - name: Write env file
         run: |
-          Set-Content -Path .env -Value "DAB=${{ secrets.DAB }}" -Encoding UTF8
+          Set-Content -Path .env -Value "ELECTRON_APP_API_BASE_URL=${{ secrets.ELECTRON_APP_API_BASE_URL }}" -Encoding UTF8
 
       - name: Install deps
         run: npm ci || npm install
 
       - name: Build
+        env:
+          ELECTRON_APP_API_BASE_URL: ${{ secrets.ELECTRON_APP_API_BASE_URL }}
         run: npm run build
 
       - name: Pack
+        env:
+          ELECTRON_APP_API_BASE_URL: ${{ secrets.ELECTRON_APP_API_BASE_URL }}
         run: npm run electron-pack
 
       - name: Upload artifacts
